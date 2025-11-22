@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>收社政作业</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        h1 {
+            color: #2c3e50;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .status {
+            display: inline-block;
+            padding: 8px 15px;
+            background-color: #e74c3c;
+            color: white;
+            border-radius: 20px;
+            font-weight: bold;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .ads-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            gap: 20px;
+        }
+
+        .ad-box {
+            flex: 1;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+        }
+
+        .ad-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+        }
+
+        .ad-box a {
+            display: block;
+            width: 100%;
+            height: 100%;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .ad-image {
+            width: 100%;
+            height: 150px;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .ad-content {
+            padding: 15px;
+        }
+
+        .ad-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #2c3e50;
+        }
+
+        .ad-description {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        .ad-label {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(231, 76, 60, 0.8);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .control-panel {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .control-title {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+
+        .control-group {
+            margin-bottom: 20px;
+        }
+
+        .control-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #34495e;
+        }
+
+        select, input[type="range"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            font-size: 1rem;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+
+        .speed-display {
+            text-align: center;
+            margin-top: 5px;
+            color: #3498db;
+            font-weight: bold;
+        }
+
+        .message-box {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .message-text {
+            font-size: 2rem;
+            color: #2c3e50;
+            font-weight: bold;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .sound-wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 50px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .wave-bar {
+            width: 5px;
+            background-color: rgba(52, 152, 219, 0.5);
+            animation: wave 1s infinite ease-in-out;
+        }
+
+        .wave-bar:nth-child(1) { height: 10px; animation-delay: 0s; }
+        .wave-bar:nth-child(2) { height: 20px; animation-delay: 0.1s; }
+        .wave-bar:nth-child(3) { height: 15px; animation-delay: 0.2s; }
+        .wave-bar:nth-child(4) { height: 25px; animation-delay: 0.3s; }
+        .wave-bar:nth-child(5) { height: 18px; animation-delay: 0.4s; }
+        .wave-bar:nth-child(6) { height: 22px; animation-delay: 0.5s; }
+        .wave-bar:nth-child(7) { height: 12px; animation-delay: 0.6s; }
+        .wave-bar:nth-child(8) { height: 20px; animation-delay: 0.7s; }
+        .wave-bar:nth-child(9) { height: 15px; animation-delay: 0.8s; }
+        .wave-bar:nth-child(10) { height: 25px; animation-delay: 0.9s; }
+
+        @keyframes wave {
+            0% { transform: scaleY(1); }
+            50% { transform: scaleY(1.5); }
+            100% { transform: scaleY(1); }
+        }
+
+        .footer {
+            margin-top: auto;
+            text-align: center;
+            padding: 20px;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .ads-container {
+                flex-direction: column;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .message-text {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>自动播报系统</h1>
+        <span class="status">正在播报中...</span>
+    </header>
+
+    <div class="container">
+        <div class="ads-container">
+            <div class="ad-box">
+                <a href="https://wangshen.flarum.cloud/" target="_blank">
+                    <div class="ad-label">广告</div>
+                    <div class="ad-image" style="background-image: url('/wangshenforum.png');"></div>
+                    <div class="ad-content">
+                        <div class="ad-title">Wangshen's Forum | Wangshen论坛</div>
+                        <div class="ad-description">致力于学术交流、分享知识、解决问题的中文社区，欢迎加入，交流，分享，成长。</div>
+                    </div>
+                </a>
+            </div>
+            
+            <div class="ad-box">
+                <a href="https://hotnews-trend.pages.dev" target="_blank">
+                    <div class="ad-label">广告</div>
+                    <div class="ad-image" style="background-image: url('/hotnew.png');"></div>
+                    <div class="ad-content">
+                        <div class="ad-title">HotNews Trend | 热点趋势榜</div>
+                        <div class="ad-description">告别信息过载，AI 助你看懂新闻资讯热点，简单的舆情监控分析 - 多平台热点聚合。监控35个平台（抖音、知乎、B站、华尔街见闻、财联社等）</div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div class="control-panel">
+            <h2 class="control-title">播报设置</h2>
+            
+            <div class="control-group">
+                <label class="control-label" for="voice-select">选择播报人</label>
+                <select id="voice-select">
+                    <option value="">加载中...</option>
+                </select>
+            </div>
+            
+            <div class="control-group">
+                <label class="control-label" for="speed-range">播报速度</label>
+                <input type="range" id="speed-range" min="1" max="1.5" step="0.05" value="1">
+                <div class="speed-display">当前速度: <span id="speed-value">1.0</span>x</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>© 2025 wangshen. 保留所有权利. 未经许可，严禁以任何形式下载本站任何源代码或搬运/套壳.</p>
+    </div>
+
+    <script>
+        // 获取DOM元素
+        const voiceSelect = document.getElementById('voice-select');
+        const speedRange = document.getElementById('speed-range');
+        const speedValue = document.getElementById('speed-value');
+        const statusElement = document.querySelector('.status');
+        
+        // 语音播报相关变量
+        let voices = [];
+        let selectedVoice = null;
+        let speechRate = 1;
+        let speechText = '收社政作业';
+        
+        // 初始化语音功能
+        function initVoices() {
+            // 获取所有可用的语音
+            voices = speechSynthesis.getVoices();
+            
+            // 筛选出Microsoft开头的语音
+            const microsoftVoices = voices.filter(voice => voice.name.includes('Microsoft'));
+            
+            // 清空下拉菜单
+            voiceSelect.innerHTML = '';
+            
+            // 添加Microsoft语音到下拉菜单
+            microsoftVoices.forEach((voice, index) => {
+                const option = document.createElement('option');
+                option.value = index;
+                option.textContent = `${voice.name} (${voice.lang})`;
+                voiceSelect.appendChild(option);
+            });
+            
+            // 默认选择第一个Microsoft语音
+            if (microsoftVoices.length > 0) {
+                selectedVoice = microsoftVoices[0];
+                voiceSelect.value = 0;
+            } else {
+                // 如果没有Microsoft语音，选择第一个可用语音
+                if (voices.length > 0) {
+                    selectedVoice = voices[0];
+                    const option = document.createElement('option');
+                    option.value = 0;
+                    option.textContent = `${voices[0].name} (${voices[0].lang})`;
+                    voiceSelect.appendChild(option);
+                }
+            }
+        }
+        
+        // 播报函数
+        function speak() {
+            // 如果当前正在播报，取消
+            if (speechSynthesis.speaking) {
+                speechSynthesis.cancel();
+            }
+            
+            // 创建新的语音播报
+            const utterance = new SpeechSynthesisUtterance(speechText);
+            utterance.voice = selectedVoice;
+            utterance.rate = speechRate;
+            utterance.pitch = 1;
+            utterance.volume = 1;
+            
+            // 播报结束后重新开始
+            utterance.onend = function() {
+                setTimeout(speak, 500); // 短暂延迟后重新开始
+            };
+            
+            // 开始播报
+            speechSynthesis.speak(utterance);
+            statusElement.textContent = '正在播报中...';
+        }
+        
+        // 语音选择事件
+        voiceSelect.addEventListener('change', function() {
+            const selectedOption = parseInt(this.value);
+            const microsoftVoices = voices.filter(voice => voice.name.includes('Microsoft'));
+            
+            if (microsoftVoices.length > 0) {
+                selectedVoice = microsoftVoices[selectedOption];
+            } else {
+                selectedVoice = voices[selectedOption];
+            }
+            
+            // 重新开始播报
+            speak();
+        });
+        
+        // 速度控制事件
+        speedRange.addEventListener('input', function() {
+            speechRate = parseFloat(this.value);
+            speedValue.textContent = speechRate.toFixed(1);
+            
+            // 重新开始播报
+            speak();
+        });
+        
+        // 页面加载完成后初始化
+        window.addEventListener('load', function() {
+            // 等待语音列表加载
+            if (speechSynthesis.onvoiceschanged !== undefined) {
+                speechSynthesis.onvoiceschanged = initVoices;
+            }
+            
+            // 初始化语音
+            initVoices();
+            
+            // 延迟一秒后开始播报，确保语音已加载
+            setTimeout(speak, 1000);
+        });
+        
+        // 确保页面可见性变化时继续播报
+        document.addEventListener('visibilitychange', function() {
+            if (!document.hidden && !speechSynthesis.speaking) {
+                speak();
+            }
+        });
+        
+        // 处理页面卸载
+        window.addEventListener('beforeunload', function() {
+            // 取消当前播报
+            if (speechSynthesis.speaking) {
+                speechSynthesis.cancel();
+            }
+        });
+    </script>
+</body>
+</html>
