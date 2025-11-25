@@ -125,55 +125,6 @@
             font-weight: bold;
         }
 
-        .control-panel {
-            background: white;
-            border-radius: 10px;
-            padding: 25px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            margin-bottom: 30px;
-        }
-
-        .control-title {
-            font-size: 1.3rem;
-            margin-bottom: 20px;
-            color: #2c3e50;
-            border-bottom: 2px solid #3498db;
-            padding-bottom: 10px;
-        }
-
-        .control-group {
-            margin-bottom: 20px;
-        }
-
-        .control-label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-            color: #34495e;
-        }
-
-        select, input[type="range"] {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            background-color: #f9f9f9;
-            font-size: 1rem;
-        }
-
-        select:focus {
-            outline: none;
-            border-color: #3498db;
-            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
-        }
-
-        .speed-display {
-            text-align: center;
-            margin-top: 5px;
-            color: #3498db;
-            font-weight: bold;
-        }
-
         .message-box {
             background: white;
             border-radius: 10px;
@@ -182,6 +133,7 @@
             text-align: center;
             position: relative;
             overflow: hidden;
+            margin-bottom: 30px;
         }
 
         .message-text {
@@ -280,155 +232,98 @@
                 </a>
             </div>
         </div>
-
-        <div class="control-panel">
-            <h2 class="control-title">播报设置</h2>
-            
-            <div class="control-group">
-                <label class="control-label" for="voice-select">选择播报人</label>
-                <select id="voice-select">
-                    <option value="">加载中...</option>
-                </select>
-            </div>
-            
-            <div class="control-group">
-                <label class="control-label" for="speed-range">播报速度</label>
-                <input type="range" id="speed-range" min="1" max="1.5" step="0.05" value="1">
-                <div class="speed-display">当前速度: <span id="speed-value">1.0</span>x</div>
-            </div>
-        </div>
     </div>
-
+    
     <div class="footer">
         <p>© 2025 wangshen. 保留所有权利. 未经许可，严禁以任何形式下载本站任何源代码或搬运/套壳.</p>
     </div>
 
+    <!-- 隐藏的音频元素，自动播放并循环 -->
+    <audio id="audio-player" src="homework.mp3" autoplay loop></audio>
+
     <script>
         // 获取DOM元素
-        const voiceSelect = document.getElementById('voice-select');
-        const speedRange = document.getElementById('speed-range');
-        const speedValue = document.getElementById('speed-value');
         const statusElement = document.querySelector('.status');
-        
-        // 语音播报相关变量
-        let voices = [];
-        let selectedVoice = null;
-        let speechRate = 1;
-        let speechText = '收社政作业';
-        
-        // 初始化语音功能
-        function initVoices() {
-            // 获取所有可用的语音
-            voices = speechSynthesis.getVoices();
-            
-            // 筛选出Microsoft开头的语音
-            const microsoftVoices = voices.filter(voice => voice.name.includes('Microsoft'));
-            
-            // 清空下拉菜单
-            voiceSelect.innerHTML = '';
-            
-            // 添加Microsoft语音到下拉菜单
-            microsoftVoices.forEach((voice, index) => {
-                const option = document.createElement('option');
-                option.value = index;
-                option.textContent = `${voice.name} (${voice.lang})`;
-                voiceSelect.appendChild(option);
-            });
-            
-            // 默认选择第一个Microsoft语音
-            if (microsoftVoices.length > 0) {
-                selectedVoice = microsoftVoices[0];
-                voiceSelect.value = 0;
-            } else {
-                // 如果没有Microsoft语音，选择第一个可用语音
-                if (voices.length > 0) {
-                    selectedVoice = voices[0];
-                    const option = document.createElement('option');
-                    option.value = 0;
-                    option.textContent = `${voices[0].name} (${voices[0].lang})`;
-                    voiceSelect.appendChild(option);
-                }
-            }
-        }
-        
-        // 播报函数
-        function speak() {
-            // 如果当前正在播报，取消
-            if (speechSynthesis.speaking) {
-                speechSynthesis.cancel();
-            }
-            
-            // 创建新的语音播报
-            const utterance = new SpeechSynthesisUtterance(speechText);
-            utterance.voice = selectedVoice;
-            utterance.rate = speechRate;
-            utterance.pitch = 1;
-            utterance.volume = 1;
-            
-            // 播报结束后重新开始
-            utterance.onend = function() {
-                setTimeout(speak, 500); // 短暂延迟后重新开始
-            };
-            
-            // 开始播报
-            speechSynthesis.speak(utterance);
-            statusElement.textContent = '正在播报中...';
-        }
-        
-        // 语音选择事件
-        voiceSelect.addEventListener('change', function() {
-            const selectedOption = parseInt(this.value);
-            const microsoftVoices = voices.filter(voice => voice.name.includes('Microsoft'));
-            
-            if (microsoftVoices.length > 0) {
-                selectedVoice = microsoftVoices[selectedOption];
-            } else {
-                selectedVoice = voices[selectedOption];
-            }
-            
-            // 重新开始播报
-            speak();
-        });
-        
-        // 速度控制事件
-        speedRange.addEventListener('input', function() {
-            speechRate = parseFloat(this.value);
-            speedValue.textContent = speechRate.toFixed(1);
-            
-            // 重新开始播报
-            speak();
-        });
+        const audioPlayer = document.getElementById('audio-player');
         
         // 页面加载完成后初始化
         window.addEventListener('load', function() {
-            // 等待语音列表加载
-            if (speechSynthesis.onvoiceschanged !== undefined) {
-                speechSynthesis.onvoiceschanged = initVoices;
+            // 尝试自动播放音频
+            const playPromise = audioPlayer.play();
+            
+            if (playPromise !== undefined) {
+                playPromise.then(_ => {
+                    // 自动播放成功
+                    statusElement.textContent = '正在播报中...';
+                })
+                .catch(error => {
+                    // 自动播放被阻止，添加用户交互事件
+                    console.log('自动播放被阻止:', error);
+                    
+                    // 添加点击事件以启动音频
+                    document.body.addEventListener('click', function initAudio() {
+                        audioPlayer.play().then(_ => {
+                            statusElement.textContent = '正在播报中...';
+                        }).catch(err => {
+                            console.error('播放失败:', err);
+                            statusElement.textContent = '播报失败';
+                        });
+                        
+                        // 移除事件监听器
+                        document.body.removeEventListener('click', initAudio);
+                    }, { once: true });
+                    
+                    statusElement.textContent = '点击页面开始播报';
+                });
             }
-            
-            // 初始化语音
-            initVoices();
-            
-            // 延迟一秒后开始播报，确保语音已加载
-            setTimeout(speak, 1000);
         });
         
-        // 确保页面可见性变化时继续播报
+        // 监听音频播放事件
+        audioPlayer.addEventListener('playing', function() {
+            statusElement.textContent = '正在播报中...';
+        });
+        
+        // 监听音频暂停事件
+        audioPlayer.addEventListener('pause', function() {
+            // 如果音频意外暂停，尝试重新播放
+            setTimeout(function() {
+                audioPlayer.play().catch(err => {
+                    console.error('重新播放失败:', err);
+                });
+            }, 100);
+        });
+        
+        // 监听音频结束事件
+        audioPlayer.addEventListener('ended', function() {
+            // 由于设置了loop属性，理论上不会触发此事件
+            // 但如果触发了，重新播放
+            audioPlayer.play();
+        });
+        
+        // 确保页面可见性变化时继续播放
         document.addEventListener('visibilitychange', function() {
-            if (!document.hidden && !speechSynthesis.speaking) {
-                speak();
+            if (!document.hidden && audioPlayer.paused) {
+                audioPlayer.play().catch(err => {
+                    console.error('恢复播放失败:', err);
+                });
             }
         });
         
-        // 处理页面卸载
-        window.addEventListener('beforeunload', function() {
-            // 取消当前播报
-            if (speechSynthesis.speaking) {
-                speechSynthesis.cancel();
+        // 禁用右键菜单，防止用户控制音频
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            return false;
+        });
+        
+        // 禁用键盘快捷键，防止用户控制音频
+        document.addEventListener('keydown', function(e) {
+            // 禁用空格键、上下箭头等可能控制音频的按键
+            if (e.code === 'Space' || e.code === 'ArrowUp' || e.code === 'ArrowDown' || 
+                e.code === 'ArrowLeft' || e.code === 'ArrowRight') {
+                e.preventDefault();
+                return false;
             }
         });
     </script>
 </body>
-
 </html>
-
